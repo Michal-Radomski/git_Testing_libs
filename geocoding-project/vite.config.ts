@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
-import sass from "sass";
+import sass from "sass-embedded";
 import legacy from "@vitejs/plugin-legacy";
 
 // https://vitejs.dev/config/

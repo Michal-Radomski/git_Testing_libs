@@ -89,3 +89,54 @@ export const getValhallaData = async (points: number[][]): Promise<FetchedData2 
     return null;
   }
 };
+
+//* Decode Valhalla Polyline string
+export const decodeValhallaPolyline = (encoded: string, precision = 6): number[][] => {
+  const factor: number = Math.pow(10, precision);
+  let index = 0;
+  let lat = 0;
+  let lng = 0;
+  const coordinates = [] as number[][];
+
+  while (index < encoded.length) {
+    let result: number = 0;
+    let shift: number = 0;
+    let byte: number;
+
+    // Decode latitude
+    do {
+      byte = encoded.charCodeAt(index++) - 63;
+      result |= (byte & 0x1f) << shift;
+      shift += 5;
+    } while (byte >= 0x20);
+
+    const latitudeChange: number = result & 1 ? ~(result >> 1) : result >> 1;
+    lat += latitudeChange;
+
+    result = 0;
+    shift = 0;
+
+    // Decode longitude
+    do {
+      byte = encoded.charCodeAt(index++) - 63;
+      result |= (byte & 0x1f) << shift;
+      shift += 5;
+    } while (byte >= 0x20);
+
+    const longitudeChange: number = result & 1 ? ~(result >> 1) : result >> 1;
+    lng += longitudeChange;
+
+    // Store the decoded coordinates
+    coordinates.push([lat / factor, lng / factor]);
+  }
+
+  return coordinates;
+};
+
+//* Remove coordinates in coordinates data
+export const removeDuplicates = (dataToFilter: number[][]): number[][] => {
+  const filteredData = Array.from(new Set(dataToFilter.map((elem: number[]) => JSON.stringify(elem)))).map((str) =>
+    JSON.parse(str)
+  ) as number[][];
+  return filteredData;
+};

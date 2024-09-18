@@ -24,7 +24,7 @@ const Map_1 = ({ position }: { position: Position }): JSX.Element => {
 
   const decodedPoints = React.useMemo((): LatLngTuple[] | undefined => {
     if (fetchedData) {
-      const decoded = decode(fetchedData?.points as string);
+      const decoded = decode(fetchedData?.points as string, 5);
       console.log(1, "fetchedData?.distance:", fetchedData?.distance, "decoded?.length:", decoded?.length);
       return decoded;
     }
@@ -43,7 +43,7 @@ const Map_1 = ({ position }: { position: Position }): JSX.Element => {
 
         <PointsComponent points={testPoints} />
 
-        {fetchedData && decodedPoints ? <PolylineComponent points={decodedPoints} /> : null}
+        {fetchedData && decodedPoints ? <PolylineComponent points={decodedPoints} color="blue" /> : null}
       </MapContainer>
     </React.Fragment>
   );

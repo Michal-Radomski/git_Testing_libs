@@ -1,22 +1,36 @@
 import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { LatLngExpression } from "leaflet";
+import { LatLngExpression, LatLngTuple } from "leaflet";
 
-import { convertPosition, getValhallaData } from "../utils/utils";
-import { PointsComponent } from "./MapsComponents";
+import { convertPosition, decodeValhallaPolyline, getValhallaData, removeDuplicates } from "../utils/utils";
+import { PointsComponent, PolylineComponent } from "./MapsComponents";
 import { testPoints, zoom } from "../data/constants";
 
 const Map_2 = ({ position }: { position: Position }): JSX.Element => {
   const convertedPosition: LatLngExpression = convertPosition(position);
 
+  const [fetchedData, setFetchedData] = React.useState<FetchedData2 | null>(null);
+
   React.useEffect(() => {
-    (async function () {
+    (async function (): Promise<void> {
       const res = await getValhallaData(testPoints);
       if (res as FetchedData2) {
-        console.log("res:", res);
+        // console.log("res:", res);
+        setFetchedData(res);
       }
     })();
   }, []);
+
+  const decodedPoints = React.useMemo((): number[][] | undefined => {
+    if (fetchedData) {
+      const decodedData = fetchedData?.shapes.map((shape) => decodeValhallaPolyline(shape, 6)).flat(1);
+      // console.log("decodedData:", decodedData);
+      const filteredData = removeDuplicates(decodedData);
+      // console.log("filteredData:", filteredData);
+      console.log(2, "fetchedData?.distance:", fetchedData?.distance, "filteredData?.length:", filteredData?.length);
+      return filteredData;
+    }
+  }, [fetchedData]);
 
   return (
     <React.Fragment>
@@ -30,6 +44,8 @@ const Map_2 = ({ position }: { position: Position }): JSX.Element => {
         </Marker>
 
         <PointsComponent points={testPoints} />
+
+        {fetchedData && decodedPoints ? <PolylineComponent points={decodedPoints as LatLngTuple[]} color="green" /> : null}
       </MapContainer>
     </React.Fragment>
   );

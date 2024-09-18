@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const MapContainer = styled.div`
   width: 100%;
-  height: auto;
+  height: 100vh;
   div.div-map {
     border: 1px solid dimgray;
   }

@@ -17,9 +17,18 @@ export const PointsComponent = ({ points }: { points: number[][] }): JSX.Element
   return <React.Fragment>{testPoints}</React.Fragment>;
 };
 
-export const PolylineComponent = ({ points, color }: { points: LatLngTuple[]; color: string }): JSX.Element => {
-  const pathOptions = { color: color };
+export const PolylineComponent = ({
+  points,
+  color,
+  weight,
+}: {
+  points: LatLngTuple[];
+  color: string;
+  weight: number;
+}): JSX.Element => {
+  const pathOptions = { color: color, weight: weight };
   // console.log("points:", points);
+  const dashArray = "10, 1";
 
-  return <Polyline pathOptions={pathOptions} positions={points} />;
+  return <Polyline pathOptions={pathOptions} positions={points} dashArray={dashArray} />;
 };

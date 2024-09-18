@@ -3,8 +3,7 @@ import React from "react";
 
 import "./App.scss";
 import StyledMapComponent from "./components/StyledComponent";
-import Map_1 from "./components/Map_1";
-import Map_2 from "./components/Map_2";
+import MapComponent from "./components/MapComponent";
 
 // console.log(globals.browser);
 // const testEnv = import.meta.env.VITE_TEST_ENV;
@@ -41,8 +40,7 @@ const App = (): JSX.Element => {
 
   return (
     <React.Fragment>
-      <StyledMapComponent children={<Map_1 position={position as Position} />} />
-      <StyledMapComponent children={<Map_2 position={position as Position} />} />
+      <StyledMapComponent children={<MapComponent position={position as Position} />} />
     </React.Fragment>
   );
 };

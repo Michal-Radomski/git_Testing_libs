@@ -3,15 +3,23 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { LatLngExpression, LatLngTuple } from "leaflet";
 import { decode } from "@googlemaps/polyline-codec";
 
-import { convertPosition, getPathGraphhopper } from "../utils/utils";
+import {
+  convertPosition,
+  decodeValhallaPolyline,
+  getPathGraphhopper,
+  getValhallaData,
+  removeDuplicates,
+} from "../utils/utils";
 import { PointsComponent, PolylineComponent } from "./MapsComponents";
 import { testPoints, zoom } from "../data/constants";
 
-const Map_1 = ({ position }: { position: Position }): JSX.Element => {
+const MapComponent = ({ position }: { position: Position }): JSX.Element => {
   const convertedPosition: LatLngExpression = convertPosition(position);
 
   const [fetchedData, setFetchedData] = React.useState<FetchedData | null>(null);
+  const [fetchedData2, setFetchedData2] = React.useState<FetchedData2 | null>(null);
 
+  //* 1. Graphhopper
   React.useEffect(() => {
     (async function (): Promise<void> {
       const res = await getPathGraphhopper(testPoints);
@@ -30,6 +38,28 @@ const Map_1 = ({ position }: { position: Position }): JSX.Element => {
     }
   }, [fetchedData]);
 
+  //* 2. Valhalla
+  React.useEffect(() => {
+    (async function (): Promise<void> {
+      const res = await getValhallaData(testPoints);
+      if (res as FetchedData2) {
+        // console.log("res:", res);
+        setFetchedData2(res);
+      }
+    })();
+  }, []);
+
+  const decodedPoints2 = React.useMemo((): number[][] | undefined => {
+    if (fetchedData2) {
+      const decodedData = fetchedData2?.shapes.map((shape) => decodeValhallaPolyline(shape, 6)).flat(1);
+      // console.log("decodedData:", decodedData);
+      const filteredData = removeDuplicates(decodedData);
+      // console.log("filteredData:", filteredData);
+      console.log(2, "fetchedData2?.distance:", fetchedData2?.distance, "filteredData?.length:", filteredData?.length);
+      return filteredData;
+    }
+  }, [fetchedData2]);
+
   return (
     <React.Fragment>
       <MapContainer center={convertedPosition} zoom={zoom} scrollWheelZoom={true} style={{ height: "100%" }}>
@@ -43,10 +73,15 @@ const Map_1 = ({ position }: { position: Position }): JSX.Element => {
 
         <PointsComponent points={testPoints} />
 
-        {fetchedData && decodedPoints ? <PolylineComponent points={decodedPoints} color="blue" /> : null}
+        {fetchedData && decodedPoints && decodedPoints2 ? (
+          <React.Fragment>
+            <PolylineComponent points={decodedPoints} color="blue" weight={7} />
+            <PolylineComponent points={decodedPoints2 as LatLngTuple[]} color="orange" weight={3} />
+          </React.Fragment>
+        ) : null}
       </MapContainer>
     </React.Fragment>
   );
 };
 
-export default Map_1;
+export default MapComponent;

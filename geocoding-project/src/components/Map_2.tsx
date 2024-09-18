@@ -2,12 +2,21 @@ import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { LatLngExpression } from "leaflet";
 
-import { convertPosition } from "../utils/utils";
+import { convertPosition, getValhallaData } from "../utils/utils";
 import { PointsComponent } from "./MapsComponents";
 import { testPoints, zoom } from "../data/constants";
 
 const Map_2 = ({ position }: { position: Position }): JSX.Element => {
   const convertedPosition: LatLngExpression = convertPosition(position);
+
+  React.useEffect(() => {
+    (async function () {
+      const res = await getValhallaData(testPoints);
+      if (res as FetchedData2) {
+        console.log("res:", res);
+      }
+    })();
+  }, []);
 
   return (
     <React.Fragment>

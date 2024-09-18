@@ -25,8 +25,7 @@ const Map_1 = ({ position }: { position: Position }): JSX.Element => {
   const decodedPoints = React.useMemo((): LatLngTuple[] | undefined => {
     if (fetchedData) {
       const decoded = decode(fetchedData?.points as string);
-      console.log(1, "fetchedData?.distance:", fetchedData?.distance);
-      console.log(1, "decoded?.length:", decoded?.length);
+      console.log(1, "fetchedData?.distance:", fetchedData?.distance, "decoded?.length:", decoded?.length);
       return decoded;
     }
   }, [fetchedData]);

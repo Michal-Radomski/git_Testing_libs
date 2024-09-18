@@ -1,12 +1,13 @@
 import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { LatLngExpression } from "leaflet";
 
 import { convertPosition } from "../utils/utils";
 import { PointsComponent } from "./MapsComponents";
 import { testPoints, zoom } from "../data/constants";
 
 const Map_1 = ({ position }: { position: Position }): JSX.Element => {
-  const convertedPosition = convertPosition(position);
+  const convertedPosition: LatLngExpression = convertPosition(position);
 
   return (
     <React.Fragment>

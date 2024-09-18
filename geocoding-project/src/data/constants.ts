@@ -6,3 +6,4 @@ export const testPoints = [
 
 export const redOptions = { color: "red" };
 export const zoom = 14.5;
+export const radius = 5;

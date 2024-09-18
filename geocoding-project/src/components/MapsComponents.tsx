@@ -1,7 +1,8 @@
 import React from "react";
-import { CircleMarker, Popup } from "react-leaflet";
+import { CircleMarker, Polyline, Popup } from "react-leaflet";
 
-import { radius, redOptions } from "../data/constants";
+import { blueOptions, radius, redOptions } from "../data/constants";
+import { LatLngTuple } from "leaflet";
 
 export const PointsComponent = ({ points }: { points: number[][] }): JSX.Element => {
   const testPoints: JSX.Element[] = points.map((point: number[], index: number): JSX.Element => {
@@ -14,4 +15,8 @@ export const PointsComponent = ({ points }: { points: number[][] }): JSX.Element
   });
 
   return <React.Fragment>{testPoints}</React.Fragment>;
+};
+
+export const PolylineComponent = ({ points }: { points: LatLngTuple[] }): JSX.Element => {
+  return <Polyline pathOptions={blueOptions} positions={points} />;
 };

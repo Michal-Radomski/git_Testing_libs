@@ -1,19 +1,19 @@
 import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { LatLngExpression } from "leaflet";
+import { LatLngExpression, LatLngTuple } from "leaflet";
+import { decode } from "@googlemaps/polyline-codec";
 
 import { convertPosition, getPathGraphhopper } from "../utils/utils";
-import { PointsComponent } from "./MapsComponents";
+import { PointsComponent, PolylineComponent } from "./MapsComponents";
 import { testPoints, zoom } from "../data/constants";
 
 const Map_1 = ({ position }: { position: Position }): JSX.Element => {
   const convertedPosition: LatLngExpression = convertPosition(position);
 
   const [fetchedData, setFetchedData] = React.useState<FetchedData | null>(null);
-  console.log("fetchedData:", fetchedData);
 
   React.useEffect(() => {
-    (async function () {
+    (async function (): Promise<void> {
       const res = await getPathGraphhopper(testPoints);
       if (res as FetchedData) {
         // console.log("res:", res);
@@ -21,6 +21,15 @@ const Map_1 = ({ position }: { position: Position }): JSX.Element => {
       }
     })();
   }, []);
+
+  const decodedPoints = React.useMemo((): LatLngTuple[] | undefined => {
+    if (fetchedData) {
+      const decoded = decode(fetchedData?.points as string);
+      console.log(1, "fetchedData?.distance:", fetchedData?.distance);
+      console.log(1, "decoded?.length:", decoded?.length);
+      return decoded;
+    }
+  }, [fetchedData]);
 
   return (
     <React.Fragment>
@@ -34,6 +43,8 @@ const Map_1 = ({ position }: { position: Position }): JSX.Element => {
         </Marker>
 
         <PointsComponent points={testPoints} />
+
+        {fetchedData && decodedPoints ? <PolylineComponent points={decodedPoints} /> : null}
       </MapContainer>
     </React.Fragment>
   );

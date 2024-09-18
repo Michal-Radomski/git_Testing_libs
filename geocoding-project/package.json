@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@googlemaps/polyline-codec": "^1.0.28",
     "@vitejs/plugin-legacy": "^5.4.2",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",

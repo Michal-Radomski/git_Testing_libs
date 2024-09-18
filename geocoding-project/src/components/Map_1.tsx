@@ -17,7 +17,7 @@ const Map_1 = ({ position }: { position: Position }): JSX.Element => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Marker position={convertedPosition}>
-          <Popup>Accuracy: {position?.accuracy || "n/a"}</Popup>
+          {position?.accuracy ? <Popup>Accuracy: {position?.accuracy || "n/a"}</Popup> : null}
         </Marker>
 
         <PointsComponent points={testPoints} />

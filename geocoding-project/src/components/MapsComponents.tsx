@@ -9,6 +9,7 @@ export const PointsComponent = ({ points }: { points: number[][] }): JSX.Element
       <CircleMarker center={[point[0], point[1]]} pathOptions={redOptions} radius={radius} key={index}>
         <Popup>{index + 1}</Popup>
       </CircleMarker>
+      // <CircleMarker center={[point[0], point[1]]} pathOptions={redOptions} radius={radius} key={index} />
     );
   });
 

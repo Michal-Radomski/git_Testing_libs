@@ -1,6 +1,7 @@
 import React from "react";
-
 // import globals from "globals";
+
+import "./App.scss";
 
 // console.log(globals.browser);
 

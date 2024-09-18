@@ -7,6 +7,8 @@ import Map_1 from "./components/Map_1";
 import Map_2 from "./components/Map_2";
 
 // console.log(globals.browser);
+// const testEnv = import.meta.env.VITE_TEST_ENV;
+// console.log({ testEnv });
 
 const App = (): JSX.Element => {
   // const [position, setPosition] = React.useState<Position>({ latitude: 54.40414 longitude: 18.60747 });

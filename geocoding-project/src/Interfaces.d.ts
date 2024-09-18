@@ -3,3 +3,8 @@ interface Position {
   longitude: number;
   accuracy?: number;
 }
+
+interface FetchedData {
+  points: string;
+  distance: number;
+}

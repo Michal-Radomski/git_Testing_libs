@@ -75,8 +75,8 @@ const MapComponent = ({ position }: { position: Position }): JSX.Element => {
 
         {fetchedData && decodedPoints && decodedPoints2 ? (
           <React.Fragment>
-            <PolylineComponent points={decodedPoints} color="blue" weight={7} />
-            <PolylineComponent points={decodedPoints2 as LatLngTuple[]} color="orange" weight={3} />
+            <PolylineComponent points={decodedPoints} color="blue" weight={7} api={"Graphhopper"} />
+            <PolylineComponent points={decodedPoints2 as LatLngTuple[]} color="orange" weight={3} api={"Valhalla"} />
           </React.Fragment>
         ) : null}
       </MapContainer>

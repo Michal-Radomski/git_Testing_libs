@@ -21,14 +21,16 @@ export const PolylineComponent = ({
   points,
   color,
   weight,
+  api,
 }: {
   points: LatLngTuple[];
   color: string;
   weight: number;
+  api: string;
 }): JSX.Element => {
   const pathOptions = { color: color, weight: weight };
   // console.log("points:", points);
   const dashArray = "10, 1";
 
-  return <Polyline pathOptions={pathOptions} positions={points} dashArray={dashArray} />;
+  return <Polyline pathOptions={pathOptions} positions={points} dashArray={dashArray} children={<Popup>{api}</Popup>} />;
 };

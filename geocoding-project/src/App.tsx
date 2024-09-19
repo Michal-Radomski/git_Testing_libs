@@ -4,14 +4,15 @@ import React from "react";
 import "./App.scss";
 import StyledMapComponent from "./components/StyledComponent";
 import MapComponent from "./components/MapComponent";
+import { initialPosition } from "./data/constants";
 
 // console.log(globals.browser);
 // const testEnv = import.meta.env.VITE_TEST_ENV;
 // console.log({ testEnv });
 
 const App = (): JSX.Element => {
-  // const [position, setPosition] = React.useState<Position>({ latitude: 54.40414 longitude: 18.60747 });
-  const [position] = React.useState<Position>({ latitude: 54.40414, longitude: 18.60747 });
+  // const [position, setPosition] = React.useState<Position>(initialPosition);
+  const [position] = React.useState<Position>(initialPosition);
 
   // React.useEffect(() => {
   //   (async function getLocation(): Promise<void> {

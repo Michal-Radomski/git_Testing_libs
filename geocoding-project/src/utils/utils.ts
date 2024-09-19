@@ -64,8 +64,8 @@ export const getValhallaData = async (points: number[][]): Promise<FetchedData2 
     units: "kilometers",
   };
 
-  // const baseUrl = "http://goeuropa.net:8002/route";
-  const baseUrl = "https://valhalla1.openstreetmap.de/route";
+  const baseUrl = "http://goeuropa.net:8002/route";
+  // const baseUrl = "https://valhalla1.openstreetmap.de/route";
   const params: { json: string } = {
     json: JSON.stringify(dataToFetch),
   };

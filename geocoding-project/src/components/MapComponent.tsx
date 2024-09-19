@@ -11,7 +11,7 @@ import {
   removeDuplicates,
 } from "../utils/utils";
 import { PointsComponent, PolylineComponent } from "./MapsComponents";
-import { testPoints, zoom } from "../data/constants";
+import { REMOVE_DUPLICATES, testPoints, zoom } from "../data/constants";
 
 const MapComponent = ({ position }: { position: Position }): JSX.Element => {
   const convertedPosition: LatLngExpression = convertPosition(position);
@@ -53,7 +53,9 @@ const MapComponent = ({ position }: { position: Position }): JSX.Element => {
     if (fetchedData2) {
       const decodedData = fetchedData2?.shapes.map((shape) => decodeValhallaPolyline(shape, 6)).flat(1);
       // console.log("decodedData:", decodedData);
-      const filteredData = removeDuplicates(decodedData);
+
+      //* Remove duplicates or not
+      const filteredData = REMOVE_DUPLICATES ? removeDuplicates(decodedData) : decodedData;
       // console.log("filteredData:", filteredData);
       console.log(2, "fetchedData2?.distance:", fetchedData2?.distance, "filteredData?.length:", filteredData?.length);
       return filteredData;

@@ -7,8 +7,6 @@ import MapComponent from "./components/MapComponent";
 import { initialPosition } from "./data/constants";
 
 // console.log(globals.browser);
-// const testEnv = import.meta.env.VITE_TEST_ENV;
-// console.log({ testEnv });
 
 const App = (): JSX.Element => {
   // const [position, setPosition] = React.useState<Position>(initialPosition);

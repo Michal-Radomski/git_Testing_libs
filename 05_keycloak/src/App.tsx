@@ -1,37 +1,47 @@
 import React from "react";
 import { useKeycloak } from "@react-keycloak/web";
-// import { useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
-// const generateRandomString = (length: number) => {
-//   return Math.random()
-//     .toString(36)
-//     .substring(2, length + 2);
-// };
+import PrivateRoute from "./PrivateRoute";
+import Dashboard from "./Dashboard";
+import Home from "./Home";
 
 const App = (): JSX.Element => {
   const { keycloak } = useKeycloak();
-  // const navigate = useNavigate();
+
+  const [initialized, setInitialized] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (keycloak) {
-      console.log("keycloak:", keycloak);
-      const isAuth = keycloak?.authenticated;
-      console.log({ isAuth });
-      // const state = generateRandomString(16);
-      // const nonce = generateRandomString(16);
-      // console.log({ state, nonce });
-
-      // const redirectUrl = `http://localhost:8080/realms/master/protocol/openid-connect/auth?response_type=code&client_id=05_keycloak&redirect_uri=${encodeURIComponent(
-      //   "http://localhost:3000"
-      // )}&state=${state}&nonce=${nonce}`;
+      // console.log(keycloak?.didInitialize);
+      setInitialized(keycloak?.didInitialize);
     }
   }, []);
+
+  if (!initialized) {
+    return <div>Loading...</div>; // Show loading indicator while initializing
+  }
 
   return (
     <React.Fragment>
       App
+      <br />
+      {JSON.stringify(keycloak?.authenticated)}
+      <br />
       <button onClick={() => keycloak?.login()}>Login</button>
       <button onClick={() => keycloak?.logout()}>Logout</button>
+      <br />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/dashboard"
+          element={
+            <React.Fragment>
+              <PrivateRoute component={Dashboard} />
+            </React.Fragment>
+          }
+        />
+      </Routes>
     </React.Fragment>
   );
 };

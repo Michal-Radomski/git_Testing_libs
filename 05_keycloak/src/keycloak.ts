@@ -5,7 +5,11 @@ const url = import.meta.env.VITE_Keycloak_url as string;
 const clientId = import.meta.env.VITE_Keycloak_clientId as string;
 // console.log({ realm, url, clientId });
 
-const initOptions = {
+export const keycloakInitOptions = {
+  onLoad: "check-sso", // Options: 'login-required' or 'check-sso'
+};
+
+export const initOptions = {
   url: url,
   realm: realm,
   clientId: clientId,

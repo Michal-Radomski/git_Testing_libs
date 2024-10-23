@@ -15,4 +15,32 @@ const initOptions = {
 
 const keycloak = new Keycloak(initOptions);
 
+// keycloak
+//   .init({
+//     // @ts-ignore
+//     onLoad: initOptions.onLoad,
+//     // @ts-ignore
+//     KeycloakResponseType: "code",
+//     silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html",
+//     checkLoginIframe: false,
+//     pkceMethod: "S256",
+//   })
+//   .then(
+//     (auth) => {
+//       if (!auth) {
+//         window.location.reload();
+//       } else {
+//         console.info("Authenticated");
+//         console.log("auth", auth);
+//         console.log("Keycloak", keycloak);
+//         keycloak.onTokenExpired = () => {
+//           console.log("token expired");
+//         };
+//       }
+//     },
+//     () => {
+//       console.error("Authenticated Failed");
+//     }
+//   );
+
 export default keycloak;

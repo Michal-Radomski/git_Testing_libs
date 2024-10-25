@@ -7,3 +7,7 @@ Git repository for additional tasks for work
 2. Valhalla api and Graphhopper api testing
 
 3. Exporting to .pdf with @react-pdf/renderer library testing
+
+4. Testing GTFS-to-HTML and similar libraries
+
+5. Keycloak testing

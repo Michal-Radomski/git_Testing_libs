@@ -2,6 +2,7 @@
   "name": "04_gtfs_to_html",
   "version": "1.0.0",
   "main": "index.ts",
+  "type": "module",
   "scripts": {
     "start": "tsx watch index.ts"
   },
@@ -10,6 +11,8 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
+    "gtfs-to-chart": "^2.0.9",
+    "gtfs-to-geojson": "^3.7.8",
     "gtfs-to-html": "^2.6.4"
   },
   "devDependencies": {

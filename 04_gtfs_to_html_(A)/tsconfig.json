@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "lib": ["Dom", "DOM.Iterable", "ESNext", "Decorators", "webworker"],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    // "typeRoots": ["/usr/local/lib/node_modules/@types"], //* Globally installed types in Ubuntu
+    "target": "esnext",
+    "lib": ["Dom", "DOM.Iterable", "ESNext"],
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "module": "NodeNext",
+    "moduleResolution": "nodeNext",
     "resolveJsonModule": true,
-    // "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "strict": true,
     "noImplicitAny": true,
@@ -17,8 +15,6 @@
     "skipLibCheck": true,
     "noImplicitThis": true,
     "strictPropertyInitialization": true
-    // "sourceMap": true,
-    // "outDir": "dist"
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules"]

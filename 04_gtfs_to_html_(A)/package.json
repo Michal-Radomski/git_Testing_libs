@@ -13,6 +13,7 @@
   "dependencies": {
     "better-sqlite3": "^11.5.0",
     "gtfs": "^4.15.6",
+    "gtfs-realtime-bindings": "^1.1.1",
     "gtfs-to-chart": "^2.0.9",
     "gtfs-to-geojson": "^3.7.8",
     "gtfs-to-html": "^2.6.4"

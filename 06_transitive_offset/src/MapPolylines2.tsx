@@ -51,6 +51,19 @@ const MapPolylines2 = (): React.JSX.Element => {
       polyline172_1.addTo(leafletMap);
       polyline212_0.addTo(leafletMap);
       polyline212_1.addTo(leafletMap);
+
+      polyline172_0.on("click", function (e: L.LeafletMouseEvent) {
+        L.popup().setLatLng(e.latlng).setContent("172_0").openOn(leafletMap);
+      });
+      polyline172_1.on("click", function (e: L.LeafletMouseEvent) {
+        L.popup().setLatLng(e.latlng).setContent("172_1").openOn(leafletMap);
+      });
+      polyline212_0.on("click", function (e: L.LeafletMouseEvent) {
+        L.popup().setLatLng(e.latlng).setContent("212_0").openOn(leafletMap);
+      });
+      polyline212_1.on("click", function (e: L.LeafletMouseEvent) {
+        L.popup().setLatLng(e.latlng).setContent("212_1").openOn(leafletMap);
+      });
     }
   }, [leafletMap, points172, points212]);
 

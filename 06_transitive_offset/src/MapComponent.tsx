@@ -1,10 +1,12 @@
 import React from "react";
-import { MapContainer, Polyline, Popup, TileLayer } from "react-leaflet";
-import { LatLngExpression } from "leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
+// import { LatLngExpression } from "leaflet";
 
 import { initialPosition, url_1, url_2 } from "./data/data";
 import { getRouteData } from "./helpers";
 import MapPolylines from "./MapPolylines";
+import MapPolylines2 from "./MapPolylines2";
+import { PointsData } from "./Interfaces";
 
 const MapComponent = (): React.JSX.Element => {
   const [points172, setPoints172] = React.useState<PointsData | null>(null);
@@ -20,34 +22,35 @@ const MapComponent = (): React.JSX.Element => {
     })();
   }, []);
 
-  const Polyline172_0 = (): React.JSX.Element => (
-    <Polyline
-      positions={points172?.points_0 as unknown as LatLngExpression[]}
-      pathOptions={{ color: points172?.color as string, weight: 4 }}
-      children={<Popup>172_0</Popup>}
-    />
-  );
-  const Polyline172_1 = (): React.JSX.Element => (
-    <Polyline
-      positions={points172?.points_1 as unknown as LatLngExpression[]}
-      pathOptions={{ color: points172?.color as string, weight: 4 }}
-      children={<Popup>172_1</Popup>}
-    />
-  );
-  const Polyline212_0 = (): React.JSX.Element => (
-    <Polyline
-      positions={points212?.points_0 as unknown as LatLngExpression[]}
-      pathOptions={{ color: points212?.color as string, weight: 4 }}
-      children={<Popup>212_0</Popup>}
-    />
-  );
-  const Polyline212_1 = (): React.JSX.Element => (
-    <Polyline
-      positions={points212?.points_1 as unknown as LatLngExpression[]}
-      pathOptions={{ color: points212?.color as string, weight: 4 }}
-      children={<Popup>212_1</Popup>}
-    />
-  );
+  //* V1
+  // const Polyline172_0 = (): React.JSX.Element => (
+  //   <Polyline
+  //     positions={points172?.points_0 as unknown as LatLngExpression[]}
+  //     pathOptions={{ color: points172?.color as string, weight: 4 }}
+  //     children={<Popup>172_0</Popup>}
+  //   />
+  // );
+  // const Polyline172_1 = (): React.JSX.Element => (
+  //   <Polyline
+  //     positions={points172?.points_1 as unknown as LatLngExpression[]}
+  //     pathOptions={{ color: points172?.color as string, weight: 4 }}
+  //     children={<Popup>172_1</Popup>}
+  //   />
+  // );
+  // const Polyline212_0 = (): React.JSX.Element => (
+  //   <Polyline
+  //     positions={points212?.points_0 as unknown as LatLngExpression[]}
+  //     pathOptions={{ color: points212?.color as string, weight: 4 }}
+  //     children={<Popup>212_0</Popup>}
+  //   />
+  // );
+  // const Polyline212_1 = (): React.JSX.Element => (
+  //   <Polyline
+  //     positions={points212?.points_1 as unknown as LatLngExpression[]}
+  //     pathOptions={{ color: points212?.color as string, weight: 4 }}
+  //     children={<Popup>212_1</Popup>}
+  //   />
+  // );
 
   return (
     <React.Fragment>
@@ -63,12 +66,16 @@ const MapComponent = (): React.JSX.Element => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          <Polyline172_0 />
+          {/* //* V1 */}
+          {/* <Polyline172_0 />
           <Polyline212_0 />
           <Polyline172_1 />
-          <Polyline212_1 />
+          <Polyline212_1 /> */}
 
           <MapPolylines />
+
+          {/* //* V2 */}
+          <MapPolylines2 />
         </MapContainer>
       ) : null}
     </React.Fragment>

@@ -6,3 +6,5 @@ interface Points {
 interface PointsData {
   [key: string]: Points[] | string;
 }
+
+declare module "leaflet-polylineoffset";

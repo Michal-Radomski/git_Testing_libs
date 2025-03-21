@@ -1,9 +1,10 @@
 import React from "react";
 import { useMap } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
+import "leaflet-polylineoffset";
 
 const MapPolylines = (): React.JSX.Element => {
-  const leafletMap = useMap();
+  const leafletMap: L.Map = useMap();
 
   // React.useEffect(() => {
   //   if (leafletMap) {
@@ -33,9 +34,13 @@ const MapPolylines = (): React.JSX.Element => {
       const polyline = L.polyline(latlngs, { color: "red" });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      const polyline2 = L.polyline(latlngs, { offset: 5, color: "violet" });
+      const polyline2 = L.polyline(latlngs, { offset: 10, color: "magenta" });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      const polyline3 = L.polyline(latlngs, { offset: -10, color: "green" });
       polyline.addTo(leafletMap);
       polyline2.addTo(leafletMap);
+      polyline3.addTo(leafletMap);
       leafletMap.fitBounds(polyline.getBounds());
     }
   }, [leafletMap]);

@@ -7,6 +7,7 @@ import { getRouteData } from "./helpers";
 import MapPolylines from "./MapPolylines";
 import MapPolylines2 from "./MapPolylines2";
 import { PointsData } from "./Interfaces";
+import MapWithD3 from "./MapWithD3";
 
 const MapComponent = (): React.JSX.Element => {
   const [points172, setPoints172] = React.useState<PointsData | null>(null);
@@ -76,6 +77,7 @@ const MapComponent = (): React.JSX.Element => {
 
           {/* //* V2 */}
           <MapPolylines2 />
+          <MapWithD3 />
         </MapContainer>
       ) : null}
     </React.Fragment>

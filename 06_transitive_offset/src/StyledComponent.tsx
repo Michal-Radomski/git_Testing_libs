@@ -1,0 +1,22 @@
+import React from "react";
+import styled from "styled-components";
+
+const MapContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  div.div-map {
+    border: 1px solid dimgray;
+  }
+`;
+
+const StyledMapComponent = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
+  return (
+    <React.Fragment>
+      <MapContainer>
+        <div className="div-map">{children}</div>
+      </MapContainer>
+    </React.Fragment>
+  );
+};
+
+export default StyledMapComponent;

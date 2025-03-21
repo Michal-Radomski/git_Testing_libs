@@ -11,3 +11,6 @@ Git repository for additional tasks for work
 4. Testing GTFS-to-HTML and similar libraries
 
 5. Keycloak testing
+
+6. Testing: [transitive.js](https://github.com/conveyal/transitive.js/tree/master/lib) and
+   [Leaflet.PolylineOffset](https://github.com/bbecquet/Leaflet.PolylineOffset)

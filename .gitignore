@@ -12,7 +12,7 @@ node_modules/
 # My Entries
 .vscode/
 build/
-dist/
+# dist/
 notes.txt
 *.zip
 Temp/

@@ -1,9 +1,10 @@
 import React from "react";
 import { MapContainer, Polyline, Popup, TileLayer } from "react-leaflet";
+import { LatLngExpression } from "leaflet";
 
 import { initialPosition, url_1, url_2 } from "./data/data";
 import { getRouteData } from "./helpers";
-import { LatLngExpression } from "leaflet";
+import MapPolylines from "./MapPolylines";
 
 const MapComponent = (): React.JSX.Element => {
   const [points172, setPoints172] = React.useState<PointsData | null>(null);
@@ -66,6 +67,8 @@ const MapComponent = (): React.JSX.Element => {
           <Polyline212_0 />
           <Polyline172_1 />
           <Polyline212_1 />
+
+          <MapPolylines />
         </MapContainer>
       ) : null}
     </React.Fragment>

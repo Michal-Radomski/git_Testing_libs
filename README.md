@@ -14,3 +14,5 @@ Git repository for additional tasks for work
 
 6. Testing: [transitive.js](https://github.com/conveyal/transitive.js/tree/master/lib) and
    [Leaflet.PolylineOffset](https://github.com/bbecquet/Leaflet.PolylineOffset)
+
+7. Testing: [Leaflet.PolylineOffset](https://github.com/bbecquet/Leaflet.PolylineOffset)

@@ -1,6 +1,6 @@
-# git_Extras_work
+# git_Testing_libs
 
-Git repository for additional tasks for work
+Git repository for testing libraries
 
 1. Other staff
 

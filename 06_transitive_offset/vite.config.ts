@@ -7,4 +7,9 @@ export default defineConfig({
     host: true,
     port: 3000,
   },
+  resolve: {
+    alias: {
+      "transitive-js": "/node_modules/transitive-js/dist/index.js",
+    },
+  },
 });

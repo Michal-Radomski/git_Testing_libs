@@ -28,24 +28,24 @@ const MapPolylines2 = (): React.JSX.Element => {
       const polyline172_0 = L.polyline(points172?.points_0 as unknown as LatLngExpression[], {
         offset: 0,
         color: points172?.color as string,
-        weight: 4,
+        weight: 3,
       });
 
       const polyline172_1 = L.polyline(points172?.points_1 as unknown as LatLngExpression[], {
-        offset: 4,
+        offset: 3,
         color: points172?.color as string,
-        weight: 2,
+        weight: 3,
       });
 
       const polyline212_0 = L.polyline(points212?.points_0 as unknown as LatLngExpression[], {
-        offset: -2,
+        offset: -3,
         color: points212?.color as string,
-        weight: 4,
+        weight: 3,
       });
       const polyline212_1 = L.polyline(points212?.points_1 as unknown as LatLngExpression[], {
-        offset: -4,
+        offset: -6,
         color: points212?.color as string,
-        weight: 4,
+        weight: 3,
       });
       polyline172_0.addTo(leafletMap);
       polyline172_1.addTo(leafletMap);

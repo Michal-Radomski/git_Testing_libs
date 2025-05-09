@@ -16,3 +16,5 @@ Git repository for testing libraries
    [Leaflet.PolylineOffset](https://github.com/bbecquet/Leaflet.PolylineOffset)
 
 7. Testing: [Leaflet.PolylineOffset](https://github.com/bbecquet/Leaflet.PolylineOffset)
+
+8. Keycloak testing [react-oidc-context](https://www.npmjs.com/package/react-oidc-context)

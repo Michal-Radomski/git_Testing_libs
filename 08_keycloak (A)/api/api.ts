@@ -13,6 +13,9 @@ import KeycloakConnect from "keycloak-connect";
 
 import { keycloakConfig } from "./keycloakConfig";
 
+//* Import routes
+import indexRouter from "./indexRouter";
+
 //* The server
 const app: Express = express();
 
@@ -53,6 +56,9 @@ app.use(
 );
 // Compress all responses
 app.use(compression({ level: 6 }));
+
+//* Route middleware
+app.use("/api", indexRouter);
 
 //* Favicon
 app.get("/favicon.ico", (_req: Request, res: Response) => {

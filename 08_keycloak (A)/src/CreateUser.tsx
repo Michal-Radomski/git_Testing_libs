@@ -6,7 +6,7 @@ import qs from "qs";
 const CreateUser = (): JSX.Element => {
   const data = qs.stringify({
     client_id: import.meta.env.VITE_CLIENT_ID as string,
-    client_secret: import.meta.env.VITE_CLIENT_SECRET,
+    client_secret: import.meta.env.VITE_CLIENT_SECRET as string,
     grant_type: "client_credentials",
   });
 

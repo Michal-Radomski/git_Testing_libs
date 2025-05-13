@@ -30,7 +30,7 @@ const memoryStore: session.MemoryStore = new session.MemoryStore();
 const keycloak = new KeycloakConnect({ store: memoryStore }, keycloakConfig);
 app.use(
   session({
-    secret: "a very long secret",
+    secret: process.env.password as string,
     resave: false,
     saveUninitialized: true,
     store: memoryStore,

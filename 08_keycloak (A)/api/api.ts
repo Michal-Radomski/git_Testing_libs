@@ -1,6 +1,5 @@
 import path from "path";
 import http from "http";
-
 import * as dotenv from "dotenv";
 dotenv.config();
 import express, { Express, Request, Response } from "express";
@@ -9,6 +8,10 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
+import session from "express-session";
+import KeycloakConnect from "keycloak-connect";
+
+import { keycloakConfig } from "./keycloakConfig";
 
 //* The server
 const app: Express = express();
@@ -22,14 +25,18 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization", "Accept"], // Specify
 };
 
-//* Custom headers example
-// app.use((_req, res, next): void => {
-//   // Attach CORS headers
-//   // Required when using a detached backend (that runs on a different domain)
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader("Access-Control-Allow-Methods", "GET,POST");
-//   next();
-// });
+//* Keycloak
+const memoryStore: session.MemoryStore = new session.MemoryStore();
+const keycloak = new KeycloakConnect({ store: memoryStore }, keycloakConfig);
+app.use(
+  session({
+    secret: "a very long secret",
+    resave: false,
+    saveUninitialized: true,
+    store: memoryStore,
+  })
+);
+app.use(keycloak.middleware());
 
 //* Middlewares
 app.use(cors(corsOptions));
@@ -67,7 +74,7 @@ httpServer.listen({ port: portHTTP }, () => {
   console.log("Current Time:", new Date().toLocaleTimeString());
 });
 
-// console.log("process.env.NODE_ENV:", process.env.NODE_ENV);
+console.log("process.env.NODE_ENV:", process.env.NODE_ENV);
 
 //* Generate JWT secret string
 // const JWT_Secret = require("crypto").randomBytes(48).toString("hex");

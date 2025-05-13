@@ -17,3 +17,4 @@ notes.txt
 *.zip
 Temp/
 db.sqlite3
+keycloakConfig.ts

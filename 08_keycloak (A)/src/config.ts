@@ -8,6 +8,9 @@ export const userManager = new UserManager({
   // userStore: undefined,
   monitorSession: true, // this allows cross tab login/logout detection
   userStore: new WebStorageStateStore({ store: window.sessionStorage }),
+  // scope: "openid profile email",
+  automaticSilentRenew: true,
+  response_type: "code",
 });
 
 export const onSigninCallback = () => {

@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 const CreateUser2 = (): JSX.Element => {
-  async function createUser(user: { [key: string]: string }) {
+  async function createUser(user: { [key: string]: string }): Promise<void> {
     try {
       const response = await axios.post("/api/create-user", user, {
         headers: { "Content-Type": "application/json" },

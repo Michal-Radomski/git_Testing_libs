@@ -1,245 +1,204 @@
-To manually implement login to Keycloak from a React app without using any Keycloak-specific library, you need to follow the
-OpenID Connect (OIDC) authorization code flow (or implicit flow for simpler cases) by directly interacting with Keycloak’s
-endpoints via standard HTTP requests and browser redirects.
-
-Here is a high-level step-by-step approach:
-
-## 1. Redirect user to Keycloak login page
-
-Construct a URL to Keycloak’s authorization endpoint with the required query parameters and redirect the user’s browser
-there. For example:
-
-```
-https:///realms//protocol/openid-connect/auth
-  ?client_id=
-  &redirect_uri=
-  &response_type=code
-  &scope=openid
-  &state=
-  &nonce=
-```
-
-- `client_id`: Your Keycloak client ID.
-- `redirect_uri`: URL in your React app to which Keycloak will redirect after login.
-- `response_type=code`: To use Authorization Code Flow.
-- `scope=openid`: Required for OpenID Connect.
-- `state` and `nonce`: Random strings for CSRF and replay protection.
-
-In React, you can trigger this redirect on a button click:
-
-```js
-const login = () => {
-  const keycloakAuthUrl = `https://keycloak.example.com/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=${encodeURIComponent(
-    window.location.origin + "/callback"
-  )}&response_type=code&scope=openid&state=xyz&nonce=abc`;
-  window.location.href = keycloakAuthUrl;
-};
-```
-
-## 2. Handle the redirect with authorization code
-
-After successful login, Keycloak redirects back to your React app’s `redirect_uri` with a query parameter `code`
-(authorization code) and `state`.
-
-Your React app should have a route (e.g., `/callback`) that extracts the `code` from the URL.
-
-## 3. Exchange authorization code for tokens
-
-Your React app must send a POST request to Keycloak’s token endpoint to exchange the authorization code for an access token
-(and optionally a refresh token and ID token).
-
-Example POST request to:
-
-```
-https:///realms//protocol/openid-connect/token
-```
-
-with form data:
-
-- `grant_type=authorization_code`
-- `client_id=`
-- `code=`
-- `redirect_uri=`
-
-If your client is confidential, you also need to send `client_secret`.
-
-Example in JavaScript (using fetch):
-
-```js
-const exchangeCodeForToken = async (code) => {
-  const params = new URLSearchParams();
-  params.append("grant_type", "authorization_code");
-  params.append("client_id", "myclient");
-  params.append("code", code);
-  params.append("redirect_uri", window.location.origin + "/callback");
-
-  const response = await fetch("https://keycloak.example.com/realms/myrealm/protocol/openid-connect/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: params.toString(),
-  });
-
-  if (!response.ok) {
-    throw new Error("Token exchange failed");
-  }
-
-  const data = await response.json();
-  return data; // contains access_token, id_token, refresh_token, expires_in, etc.
-};
-```
-
-## 4. Store tokens securely
-
-Once you receive tokens, store them securely in memory or in browser storage (e.g., `sessionStorage` or `localStorage`),
-depending on your security requirements.
-
-## 5. Use access token to access protected resources
-
-Send the access token as a Bearer token in the `Authorization` header when calling your backend or APIs.
-
-## 6. Implement logout
-
-To log out, redirect the user to Keycloak’s logout endpoint:
-
-```
-https:///realms//protocol/openid-connect/logout?redirect_uri=
-```
-
-## Important notes
-
-- You must handle token expiration and refresh tokens if needed.
-- For security, use Authorization Code Flow with PKCE if your client is public (frontend only).
-- You need to configure your Keycloak client with the correct redirect URIs and CORS settings.
-- This manual approach requires careful handling of security concerns, token storage, and error handling.
+Here's an example illustrating how to implement a **login flow in a React SPA using Authorization Code Flow with PKCE**,
+where the frontend initiates the login and the backend performs the token exchange securely with Keycloak holding client
+credentials.
 
 ---
 
-This approach is essentially what Keycloak’s JavaScript adapter libraries do under the hood but done manually in your React
-app without any library[2][3].
+## Overview
 
-If you want a concrete minimal example, the steps are:
+- **Frontend (React SPA):**
 
-1. On login button click, redirect to Keycloak auth URL.
-2. On redirect back, parse `code` from URL.
-3. POST to token endpoint to get tokens.
-4. Store tokens and update UI accordingly.
+  - Generates PKCE code verifier and code challenge.
+  - Redirects user to Keycloak authorization endpoint with `code_challenge`.
+  - Receives authorization code on redirect callback.
+  - Sends authorization code and code verifier to your backend API.
 
-This lets you fully control the login flow without using any Keycloak-specific React library.
-
-Citations: [1] https://github.com/erbsutil/react-keycloak-auth [2]
-https://blog.logrocket.com/implement-keycloak-authentication-react/ [3]
-https://www.reddit.com/r/KeyCloak/comments/1dstul1/using_keycloak_to_authenticate_in_a_react/ [4]
-https://www.youtube.com/watch?v=yUrfBrSkWLg [5]
-https://medium.hexadefence.com/securing-a-react-app-using-keycloak-ac0ee5dd4bfc [6]
-https://medium.com/scalac/user-authentication-with-keycloak-part-1-35295107acd [7]
-https://scalac.io/blog/user-authentication-keycloak-1/ [8] https://www.keycloak.org/docs/latest/server_development/index.html
+- **Backend (Express API):**
+  - Receives authorization code and code verifier from frontend.
+  - Exchanges authorization code for tokens with Keycloak token endpoint, authenticating with client credentials (client ID +
+    secret).
+  - Returns tokens (or session info) to frontend securely.
 
 ---
 
-Answer from Perplexity:
-https://www.perplexity.ai/search/using-react-with-keycloak-i-ha-oM0yLZ.uR0qOmwhvUfv8Qw?utm_source=copy_output
+## Example Code
 
-To add an Express API to your React app secured with Keycloak using the `react-oidc-context` library and enhance overall
-security, you need to secure both the frontend and backend properly with Keycloak and OAuth2/OpenID Connect standards. Here's
-a concise guide based on best practices and available resources:
+### 1. Frontend React (simplified)
 
-## 1. Secure Your React Frontend with `react-oidc-context`
+```tsx
+import React, { useEffect } from "react";
 
-- You already use `react-oidc-context` to handle authentication in React via OpenID Connect (OIDC) with Keycloak.
-- This library manages user login, token acquisition, and session management on the client side, ensuring the React app is
-  protected and users are authenticated before accessing protected routes[6][8][10].
+function base64UrlEncode(str: ArrayBuffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(str)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
 
-## 2. Add and Secure Your Express API Backend with Keycloak
+async function sha256(plain: string) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  return await crypto.subtle.digest("SHA-256", data);
+}
 
-**Setup Express with Keycloak Middleware:**
+function generateCodeVerifier() {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return base64UrlEncode(array.buffer);
+}
 
-- Install Express and the Keycloak Node.js adapter.
-- Use Express sessions with a memory store or another session store.
-- Initialize Keycloak middleware with the session store.
-- Protect your API routes by applying Keycloak middleware to enforce authentication and authorization.
+async function generateCodeChallenge(codeVerifier: string) {
+  const hashed = await sha256(codeVerifier);
+  return base64UrlEncode(hashed);
+}
 
-Example setup snippet:
+const keycloakAuthUrl = "http://localhost:8080/realms/myrealm/protocol/openid-connect/auth";
+const clientId = "my-client";
+const redirectUri = "http://localhost:3000/callback";
+
+export default function Login() {
+  useEffect(() => {
+    // Check if redirected back with code
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code) {
+      // Get stored code_verifier
+      const codeVerifier = sessionStorage.getItem("pkce_code_verifier");
+      if (!codeVerifier) {
+        console.error("Code verifier not found");
+        return;
+      }
+      // Send code and verifier to backend to exchange tokens
+      fetch("http://localhost:4000/api/auth/callback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ code, codeVerifier, redirectUri }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Logged in, tokens:", data);
+          // Handle login success (store tokens, update UI, etc.)
+        });
+    }
+  }, []);
+
+  const login = async () => {
+    const codeVerifier = generateCodeVerifier();
+    const codeChallenge = await generateCodeChallenge(codeVerifier);
+    sessionStorage.setItem("pkce_code_verifier", codeVerifier);
+
+    const authUrl = `${keycloakAuthUrl}?response_type=code&client_id=${clientId}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&scope=openid profile email` +
+      `&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+
+    window.location.href = authUrl;
+  };
+
+  return Login with Keycloak;
+}
+```
+
+---
+
+### 2. Backend Express API (token exchange)
 
 ```js
-const express = require("express");
-const session = require("express-session");
-const Keycloak = require("keycloak-connect");
+// server.js (Express)
+import express from "express";
+import fetch from "node-fetch";
+import cors from "cors";
 
 const app = express();
-const memoryStore = new session.MemoryStore();
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(express.json());
 
-app.use(
-  session({
-    secret: "yourSecret",
-    resave: false,
-    saveUninitialized: true,
-    store: memoryStore,
-  })
-);
+const tokenEndpoint = "http://localhost:8080/realms/myrealm/protocol/openid-connect/token";
+const clientId = "my-client";
+const clientSecret = "your-client-secret";
 
-const keycloak = new Keycloak({ store: memoryStore });
+app.post("/api/auth/callback", async (req, res) => {
+  const { code, codeVerifier, redirectUri } = req.body;
 
-app.use(keycloak.middleware());
+  if (!code || !codeVerifier || !redirectUri) {
+    return res.status(400).json({ error: "Missing parameters" });
+  }
 
-// Protect API route
-app.get("/api/secure-data", keycloak.protect(), (req, res) => {
-  res.json({ message: "This is a secured endpoint" });
+  const params = new URLSearchParams();
+  params.append("grant_type", "authorization_code");
+  params.append("client_id", clientId);
+  params.append("client_secret", clientSecret);
+  params.append("code", code);
+  params.append("code_verifier", codeVerifier);
+  params.append("redirect_uri", redirectUri);
+
+  try {
+    const tokenResponse = await fetch(tokenEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
+    });
+
+    if (!tokenResponse.ok) {
+      const error = await tokenResponse.json();
+      return res.status(500).json({ error });
+    }
+
+    const tokens = await tokenResponse.json();
+
+    // Optionally set tokens in secure HTTP-only cookies here
+
+    res.json(tokens);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.listen(3000, () => console.log("API listening on port 3000"));
+app.listen(4000, () => {
+  console.log("API server listening on http://localhost:4000");
+});
 ```
-
-This setup ensures that only authenticated users with valid tokens can access your API endpoints[3].
-
-**Configure Keycloak Client for API:**
-
-- In Keycloak Admin Console, create a client representing your Express API.
-- Set Access Type to `confidential` for secure client authentication.
-- Configure valid redirect URIs and obtain the client secret.
-- Use this client configuration in your Express app to validate tokens and manage authorization[5][7].
-
-## 3. Token Validation and Role-Based Access Control (RBAC)
-
-- Your Express API should verify the access token sent by the React frontend (usually in the Authorization header as a Bearer
-  token).
-- Use Keycloak’s middleware or JWT libraries to validate tokens.
-- Implement role-based access control by checking user roles/permissions embedded in the token to restrict API access
-  accordingly[2][7].
-
-## 4. Additional Security Best Practices
-
-- Use HTTPS for all communication between client, API, and Keycloak server to protect tokens and credentials in transit[9].
-- Implement multi-factor authentication (MFA) in Keycloak for sensitive accounts[9].
-- Regularly update Keycloak and dependencies to patch security vulnerabilities.
-- Manage session expiry and token refresh securely both in React and Express[9][10].
 
 ---
 
-### Summary
+## Explanation
 
-- Continue using `react-oidc-context` for React frontend authentication with Keycloak.
-- Add an Express API secured by Keycloak middleware (`keycloak-connect`) to protect backend endpoints.
-- Configure a confidential Keycloak client for your API with proper roles and permissions.
-- Validate tokens and enforce RBAC in Express.
-- Use HTTPS and consider MFA for stronger security.
+- The **frontend** generates a cryptographically random `code_verifier` and a corresponding `code_challenge` (SHA-256 hashed
+  and base64-url-encoded).
+- It stores the `code_verifier` temporarily in `sessionStorage`.
+- It redirects the user to Keycloak’s authorization endpoint with the `code_challenge` and other parameters.
+- After user login, Keycloak redirects back with an authorization `code`.
+- The frontend sends the `code` and `code_verifier` to your backend.
+- The **backend** calls Keycloak’s token endpoint with the authorization `code`, `code_verifier`, and client credentials
+  (`client_id` and `client_secret`) to securely exchange the code for tokens.
+- The backend returns tokens to the frontend or sets secure cookies for session management.
 
-This approach ensures your React app and Express API are both secured by Keycloak, providing a robust authentication and
-authorization framework for your full stack application[1][2][3][5][6][7][9].
+---
 
-Citations: [1] https://www.keycloak.org/docs/25.0.6/securing_apps/index.html [2]
-https://dev.to/haithamoumer/secure-your-rest-api-using-keycloak-role-based-access-control-3f96 [3]
-https://www.keycloak.org/securing-apps/nodejs-adapter [4]
-https://stackoverflow.com/questions/65009654/how-to-protect-frontend-and-rest-api-with-keycloak [5]
-https://www.restack.io/p/designing-secure-user-interfaces-api-answer-secure-rest-api-keycloak [6]
-https://www.wedaa.tech/docs/blog/2023/12/26/Intergating-keycloak-with-react-app [7]
-https://www.ijert.org/api-security-protecting-apis-with-keycloak [8]
-https://wedaa.tech/docs/blog/2023/12/26/Intergating-keycloak-with-react-app [9]
-https://inero-software.com/best-keycloak-practices/ [10] https://betweendata.io/posts/react-keycloak-authentication/ [11]
-https://www.youtube.com/watch?v=yUrfBrSkWLg
+## Notes
+
+- Your Keycloak client must be configured as **confidential** with client authentication enabled.
+- The backend holds the client secret securely; frontend never exposes it.
+- Redirect URIs must be registered in Keycloak client settings.
+- Use HTTPS in production.
+- You can extend this flow to store tokens in HttpOnly cookies for better security.
+
+---
+
+This pattern matches best practices for SPAs using Authorization Code Flow with PKCE and backend token exchange when client
+authentication is required[1][2][3][4][5].
+
+Citations: [1] https://github.com/avergnaud/keycloak-pkce-react [2]
+https://skycloak.io/blog/keycloak-how-to-create-a-pkce-authorization-flow-client/ [3]
+https://stackoverflow.com/questions/65277481/how-implement-react-spa-authentication-with-keycloak-and-pkce-flow [4]
+https://rene-wilby.de/en/blog/rn-expo-oauth-authorization-code-flow-pkce-keycloak/ [5]
+https://stackoverflow.com/questions/74120967/reactjs-keycloak-pkce-sending-code-verifier-with-token-post-request-after-authen
+[6] https://medium.hexadefence.com/securing-a-react-app-using-keycloak-ac0ee5dd4bfc [7]
+https://www.youtube.com/watch?v=IW15Q68V50E [8]
+https://github.com/rbrki07/rn-expo-oauth-authorization-code-flow-pkce-keycloak
 
 ---
 
 Answer from Perplexity:
-https://www.perplexity.ai/search/i-have-keycloak-and-react-app-RhMOnPQqQJuO7Em6YbJcng?utm_source=copy_output
+https://www.perplexity.ai/search/i-m-building-app-react-fronten-f9AIuo_QTW2mcH8CxAkCEA?utm_source=copy_output

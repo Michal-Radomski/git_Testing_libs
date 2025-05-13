@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth, type AuthContextProps } from "react-oidc-context";
+import CreateUser from "./CreateUser";
 
 interface ProtectedAppProps {
   children: React.ReactNode;
@@ -31,6 +32,8 @@ export const ProtectedApp: React.FC<ProtectedAppProps> = (props): React.JSX.Elem
       <React.Fragment>
         <h1>Sign In</h1>
         <button onClick={() => auth.signinRedirect()}>Login</button>
+        <br />
+        <CreateUser />
       </React.Fragment>
     );
   }

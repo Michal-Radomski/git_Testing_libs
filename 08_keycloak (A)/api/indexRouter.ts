@@ -13,7 +13,7 @@ indexRouter.post("/create-user", async (req: Request, res: Response) => {
     // console.log("token:", token);
 
     const newUserData = {
-      email: "test10@test.com.pl",
+      email: "test12@test.com.pl",
       enabled: true,
       emailVerified: true,
       firstName: "John",

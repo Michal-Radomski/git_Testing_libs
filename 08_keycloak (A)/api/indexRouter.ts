@@ -3,6 +3,10 @@ import axios from "axios";
 
 import { getAdminToken } from "./utils";
 
+// type CustomError = {
+//   error: string;
+// };
+
 const indexRouter: Router = express.Router({ strict: false, caseSensitive: true });
 
 indexRouter.post("/create-user", async (req: Request, res: Response) => {
@@ -48,5 +52,23 @@ indexRouter.post("/create-user", async (req: Request, res: Response) => {
     }
   }
 });
+
+// indexRouter.get("/auth-well-known-config", async (req: Request, res: Response) => {
+//   console.log("req.ip:", req.ip);
+//   const url = process.env.wellKnown as string;
+//   console.log({ url });
+
+//   try {
+//     const response = await axios.get(url, {
+//       headers: { accept: "application/json" },
+//     });
+
+//     console.log("data:", response.data);
+//     res.status(200).json(response.data);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: String(error) } satisfies CustomError);
+//   }
+// });
 
 export default indexRouter;

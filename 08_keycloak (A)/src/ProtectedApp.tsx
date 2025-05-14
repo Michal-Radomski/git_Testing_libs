@@ -12,6 +12,17 @@ export const ProtectedApp: React.FC<ProtectedAppProps> = (props): React.JSX.Elem
 
   const auth: AuthContextProps = useAuth();
 
+  // React.useEffect(() => {
+  //   (async function () {
+  //     const response = await fetch("/api/auth-well-known-config");
+  //     // console.log(response);
+  //     if (!response.ok) {
+  //       throw new Error("Please confirm your auth server is up");
+  //     }
+
+  //   })();
+  // }, []);
+
   if (auth.isLoading) {
     return (
       <React.Fragment>

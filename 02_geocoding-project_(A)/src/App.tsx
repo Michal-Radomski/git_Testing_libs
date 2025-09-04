@@ -3,14 +3,15 @@ import React from "react";
 
 import "./App.scss";
 import StyledMapComponent from "./components/StyledComponent";
-import MapComponent from "./components/MapComponent";
-import { initialPosition } from "./data/constants";
+// import MapComponent from "./components/MapComponent";
+// import { initialPosition } from "./data/constants";
+import PompanoBeachRoutesMap from "./components/PompanoBeachRoutesMap";
 
 // console.log(globals.browser);
 
 const App = (): JSX.Element => {
   // const [position, setPosition] = React.useState<Position>(initialPosition);
-  const [position] = React.useState<Position>(initialPosition);
+  // const [position] = React.useState<Position>(initialPosition);
 
   // React.useEffect(() => {
   //   (async function getLocation(): Promise<void> {
@@ -39,7 +40,8 @@ const App = (): JSX.Element => {
 
   return (
     <React.Fragment>
-      <StyledMapComponent children={<MapComponent position={position as Position} />} />
+      {/* <StyledMapComponent children={<MapComponent position={position as Position} />} /> */}
+      <StyledMapComponent children={<PompanoBeachRoutesMap />} />
     </React.Fragment>
   );
 };

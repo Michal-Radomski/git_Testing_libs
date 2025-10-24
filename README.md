@@ -18,3 +18,5 @@ Git repository for testing libraries
 7. Testing: [Leaflet.PolylineOffset](https://github.com/bbecquet/Leaflet.PolylineOffset)
 
 8. Keycloak testing with React and Node [react-oidc-context](https://www.npmjs.com/package/react-oidc-context)
+
+9. Testing [Geographic Information System libraries](https://en.wikipedia.org/wiki/Geographic_information_system)

@@ -1,0 +1,18 @@
+{
+  "name": "09_gis",
+  "version": "1.0.0",
+  "description": "Geographic information system",
+  "main": "index.ts",
+  "scripts": {
+    "start": "nodemon index.ts",
+    "start2": "node --max_old_space_size=8192 `which osmtogeojson` test.osm.pbf > large.geojson"
+  },
+  "keywords": [],
+  "author": "Michal Radomski <michalra@op.pl>",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "ogr2ogr": "^6.0.1",
+    "osmtogeojson": "^3.0.0-beta.5"
+  }
+}

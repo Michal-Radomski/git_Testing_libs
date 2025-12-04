@@ -1,6 +1,5 @@
 import React from "react";
-import { type LatLngExpression, type LeafletMouseEvent } from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { type LatLngExpression, type LeafletMouseEvent, LatLng, Marker as LeafletMarker } from "leaflet";
 import { Polyline, MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 
 import { polylinePoints } from "./data/points";
@@ -18,7 +17,7 @@ function ClickHandler(): null {
 const MapComponent = (): JSX.Element => {
   const position = [52.410833, 16.938333];
 
-  const [points] = React.useState<[number, number][]>(polylinePoints);
+  const [points, setPoints] = React.useState<[number, number][]>(polylinePoints);
   const [lines, setLines] = React.useState<[number, number][][]>([]);
 
   React.useEffect(() => {
@@ -37,17 +36,39 @@ const MapComponent = (): JSX.Element => {
     }, 1000);
   }, [points]);
 
-  const markers: JSX.Element[] = points?.map((point, index: number): JSX.Element => {
+  //* V1
+  // const markers: JSX.Element[] = points?.map((point, index: number): JSX.Element => {
+  //   return (
+  //     <Marker position={point as LatLngExpression} key={index}>
+  //       <Popup>{index + 1}</Popup>
+  //     </Marker>
+  //   );
+  // });
+
+  //* V2
+  const draggableMarkers: JSX.Element[] = points.map((pos: [number, number], index: number): JSX.Element => {
+    // console.log("index:", index);
+
     return (
-      <Marker position={point as LatLngExpression} key={index}>
-        <Popup>{index + 1}</Popup>
-      </Marker>
+      <DraggableMarker
+        index={index}
+        key={index}
+        position={pos as LatLngExpression}
+        onDragEnd={(newPosition: LatLng) => {
+          // console.log("newPosition:", newPosition);
+          setPoints((prev) => {
+            const newPoints = [...prev];
+            newPoints[index] = [newPosition?.lat, newPosition?.lng];
+            return newPoints;
+          });
+        }}
+      />
     );
   });
 
-  const linesElements: JSX.Element[] = lines?.map((polyline: [number, number][], index: number) => (
-    <Polyline positions={polyline} key={index} />
-  ));
+  const linesElements: JSX.Element[] = lines?.map(
+    (polyline: [number, number][], index: number): JSX.Element => <Polyline positions={polyline} key={index} />
+  );
 
   return (
     <React.Fragment>
@@ -61,7 +82,8 @@ const MapComponent = (): JSX.Element => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {markers}
+        {/* {markers} */}
+        {draggableMarkers}
 
         {linesElements}
         <ClickHandler />
@@ -71,3 +93,39 @@ const MapComponent = (): JSX.Element => {
 };
 
 export default MapComponent;
+
+const DraggableMarker = ({
+  position,
+  index,
+  onDragEnd,
+}: {
+  position: LatLngExpression;
+  index: number;
+  onDragEnd: (newPosition: LatLng) => void;
+}): JSX.Element => {
+  const [currentPosition, setCurrentPosition] = React.useState<LatLngExpression>(position);
+  // console.log("currentPosition:", currentPosition);
+
+  const markerRef = React.useRef<LeafletMarker>(null);
+
+  const eventHandlers = React.useMemo(
+    () => ({
+      dragend(): void {
+        const marker = markerRef.current;
+        if (marker !== null) {
+          const newPosition: LatLng = marker.getLatLng();
+          // console.log("newPosition:", newPosition);
+          setCurrentPosition(newPosition);
+          onDragEnd(newPosition);
+        }
+      },
+    }),
+    [onDragEnd]
+  );
+
+  return (
+    <Marker draggable={true} eventHandlers={eventHandlers} position={currentPosition} ref={markerRef}>
+      <Popup>{index + 1}</Popup>
+    </Marker>
+  );
+};

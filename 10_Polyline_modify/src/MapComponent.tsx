@@ -1,32 +1,68 @@
 import React from "react";
-import { type LatLngExpression, LatLng, Marker as LeafletMarker } from "leaflet";
-import { Polyline, MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { type LatLngExpression, type LeafletMouseEvent, LatLng, Marker as LeafletMarker, type Map } from "leaflet";
+import { Polyline, MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 
 import { polylinePoints } from "./data/points";
+
+function ClickHandler({
+  checkedLineIndex,
+  setPoints,
+  setCheckedLineIndex,
+}: {
+  checkedLineIndex: number;
+  setPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
+  setCheckedLineIndex: React.Dispatch<React.SetStateAction<number>>;
+}): null {
+  useMapEvents({
+    click(e: LeafletMouseEvent) {
+      if (checkedLineIndex >= 0) {
+        // console.log("Position:", e.latlng);
+        const newPoint = [e.latlng.lat, e.latlng.lng];
+
+        setPoints((prev) => {
+          const newPoints = [...prev.slice(0, checkedLineIndex + 1), newPoint, ...prev.slice(checkedLineIndex + 1)] as [
+            number,
+            number
+          ][];
+          return newPoints;
+        });
+        setCheckedLineIndex(-1); // Reset selection
+      }
+    },
+  });
+  return null; // Renders nothing
+}
 
 const MapComponent = (): JSX.Element => {
   const position = [52.410833, 16.938333];
 
+  const [mapView, setMapView] = React.useState<Map | null>(null);
   const [points, setPoints] = React.useState<[number, number][]>(polylinePoints);
   const [lines, setLines] = React.useState<[number, number][][]>([]);
   const [checkedLineIndex, setCheckedLineIndex] = React.useState<number>(-1);
-  // console.log("points:", points);
+  const [showMap, setShowMap] = React.useState<boolean>(true);
 
   React.useEffect(() => {
-    const linesToDraw: [number, number][][] = points
-      ?.map((_: [number, number], index: number, arr: [number, number][]) => {
-        if (index < arr.length - 1) {
-          return [arr[index], arr[index + 1]];
-        } else {
-          return null;
-        }
-      })
-      ?.filter((elem: [number, number][] | null) => elem !== null);
+    (async function () {
+      await setShowMap(false);
+      // console.log("points?.length:", points?.length);
 
-    setTimeout(() => {
-      setLines(linesToDraw);
-    }, 1000);
-  }, [points]);
+      const linesToDraw: [number, number][][] = await points
+        ?.map((_: [number, number], index: number, arr: [number, number][]) => {
+          if (index < arr.length - 1) {
+            return [arr[index], arr[index + 1]];
+          } else {
+            return null;
+          }
+        })
+        ?.filter((elem: [number, number][] | null) => elem !== null);
+
+      await setLines(linesToDraw);
+      setTimeout(() => {
+        setShowMap(true);
+      }, 0);
+    })();
+  }, [points, mapView]);
 
   const draggableMarkers: JSX.Element[] = points.map((pos: [number, number], index: number): JSX.Element => {
     return (
@@ -62,14 +98,17 @@ const MapComponent = (): JSX.Element => {
         }}
         positions={polyline}
         key={index}
-      />
+      >
+        <Popup>{index + 1}</Popup>
+      </Polyline>
     )
   );
 
   return (
     <React.Fragment>
-      {
+      {showMap ? (
         <MapContainer
+          ref={setMapView}
           center={position as LatLngExpression}
           zoom={15}
           scrollWheelZoom={true}
@@ -82,8 +121,13 @@ const MapComponent = (): JSX.Element => {
           {draggableMarkers}
 
           {linesElements}
+          <ClickHandler
+            checkedLineIndex={checkedLineIndex}
+            setPoints={setPoints}
+            setCheckedLineIndex={setCheckedLineIndex}
+          />
         </MapContainer>
-      }
+      ) : null}
     </React.Fragment>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { type LatLngExpression, type LeafletMouseEvent, LatLng, Marker as LeafletMarker, type Map } from "leaflet";
+import { type LatLngExpression, type LeafletMouseEvent, LatLng, Marker as LeafletMarker } from "leaflet";
 import { Polyline, MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 
 import { polylinePoints } from "./data/points";
@@ -36,14 +36,15 @@ function ClickHandler({
 const MapComponent = (): JSX.Element => {
   const position = [52.410833, 16.938333];
 
-  const [mapView, setMapView] = React.useState<Map | null>(null);
+  // const [mapView, setMapView] = React.useState<Map | null>(null);
   const [points, setPoints] = React.useState<[number, number][]>(polylinePoints);
   const [lines, setLines] = React.useState<[number, number][][]>([]);
   const [checkedLineIndex, setCheckedLineIndex] = React.useState<number>(-1);
   const [showMap, setShowMap] = React.useState<boolean>(true);
+  // console.log("showMap:", showMap);
 
   React.useEffect(() => {
-    (async function () {
+    (async function (): Promise<void> {
       await setShowMap(false);
       // console.log("points?.length:", points?.length);
 
@@ -62,7 +63,7 @@ const MapComponent = (): JSX.Element => {
         setShowMap(true);
       }, 0);
     })();
-  }, [points, mapView]);
+  }, [points]);
 
   const draggableMarkers: JSX.Element[] = points.map((pos: [number, number], index: number): JSX.Element => {
     return (
@@ -108,7 +109,7 @@ const MapComponent = (): JSX.Element => {
     <React.Fragment>
       {showMap ? (
         <MapContainer
-          ref={setMapView}
+          // ref={setMapView}
           center={position as LatLngExpression}
           zoom={15}
           scrollWheelZoom={true}

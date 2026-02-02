@@ -18,3 +18,6 @@ notes.txt
 Temp/
 db.sqlite3
 *.geojson
+
+# My Entries:
+tc3Testing.ts

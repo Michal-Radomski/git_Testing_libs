@@ -22,3 +22,5 @@ Git repository for testing libraries
 9. Testing [Geographic Information System libraries](https://en.wikipedia.org/wiki/Geographic_information_system)
 
 10. Testing polyline modifying
+
+11. Keycloak testing

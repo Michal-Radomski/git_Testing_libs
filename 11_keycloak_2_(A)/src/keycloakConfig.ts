@@ -8,10 +8,10 @@ export const userManager = new UserManager({
   post_logout_redirect_uri: window.location.origin,
   monitorSession: true, // this allows cross tab login/logout detection
   userStore: new WebStorageStateStore({ store: window.sessionStorage }),
-  // userStore: undefined,
   scope: "openid profile email",
   automaticSilentRenew: true,
   response_type: "code",
+  silent_redirect_uri: window.location.origin,
 });
 
 export const onSigninCallback = (): void => {

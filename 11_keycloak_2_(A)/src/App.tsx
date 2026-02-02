@@ -18,7 +18,7 @@ const App = (): React.JSX.Element => {
   React.useEffect(() => {
     if (user) {
       const { access_token } = user;
-      // console.log("access_token:", access_token);
+      console.log("access_token:", access_token);
       setAccessToken(access_token);
     }
   }, [user]);

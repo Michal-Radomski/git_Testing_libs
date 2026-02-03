@@ -54,8 +54,23 @@ const App = (): React.JSX.Element => {
     auth.signoutRedirect();
   };
 
+  const requestStorageAccessIfNeeded = async (): Promise<void> => {
+    if (document.requestStorageAccess) {
+      console.log("requestStorageAccess");
+      try {
+        await document.requestStorageAccess();
+        console.log("Storage access granted");
+      } catch (err) {
+        console.warn("Storage access denied", err);
+      }
+    }
+  };
+
   const logIn = (): void => {
-    auth.signinRedirect();
+    (async function login(): Promise<void> {
+      await requestStorageAccessIfNeeded();
+      await auth.signinRedirect();
+    })();
   };
 
   return (

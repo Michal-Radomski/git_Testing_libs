@@ -6,7 +6,7 @@ export const userManager = new UserManager({
   redirect_uri: `${window.location.origin}`,
   // post_logout_redirect_uri: `${window.location.origin}${window.location.pathname}`,
   post_logout_redirect_uri: window.location.origin,
-  monitorSession: true, // this allows cross tab login/logout detection
+  monitorSession: false, // this allows cross tab login/logout detection - false w Chrome!, true w Firefox
   userStore: new WebStorageStateStore({ store: window.sessionStorage }),
   scope: "openid profile email",
   automaticSilentRenew: true,

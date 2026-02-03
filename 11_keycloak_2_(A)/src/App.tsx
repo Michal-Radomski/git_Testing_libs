@@ -5,6 +5,7 @@ import { useAuth, type AuthContextProps } from "react-oidc-context";
 // import "./tc3Testing";
 import "./App.scss";
 import axios from "axios";
+import { agenciesUrl } from "./secret";
 
 const App = (): React.JSX.Element => {
   const auth: AuthContextProps = useAuth();
@@ -16,9 +17,30 @@ const App = (): React.JSX.Element => {
   const [accessToken, setAccessToken] = React.useState<string>("");
 
   React.useEffect(() => {
+    (async function getData(): Promise<void> {
+      await axios
+        .get(agenciesUrl, {
+          withCredentials: true,
+          headers: {
+            "content-type": "application/json",
+            accept: "application/json, text/plain, */*",
+            "Accept-Language": "en-US",
+          },
+        })
+        .then((response) => {
+          console.log("Data:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    })();
+  }, []);
+
+  React.useEffect(() => {
     if (user) {
+      // console.log("user:", user);
       const { access_token } = user;
-      console.log("access_token:", access_token);
+      // console.log("access_token:", access_token);
       setAccessToken(access_token);
     }
   }, [user]);
